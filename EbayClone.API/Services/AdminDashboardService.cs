@@ -1,0 +1,29 @@
+using EbayClone.API.DTOs.Dashboard;
+using EbayClone.API.Repositories;
+
+namespace EbayClone.API.Services;
+
+public class AdminDashboardService(IDashboardRepository dashboardRepository) : IAdminDashboardService
+{
+    public async Task<DashboardDto> GetAsync(CancellationToken cancellationToken = default)
+    {
+        var totalUsers = await dashboardRepository.CountUsersAsync(cancellationToken);
+        var totalProducts = await dashboardRepository.CountProductsAsync(cancellationToken);
+        var totalOrders = await dashboardRepository.CountOrdersAsync(cancellationToken);
+        var revenue = await dashboardRepository.SumRevenueAsync(cancellationToken);
+        var activeUsers = await dashboardRepository.CountActiveUsersAsync(cancellationToken);
+        var bannedUsers = await dashboardRepository.CountBannedUsersAsync(cancellationToken);
+        var hiddenProducts = await dashboardRepository.CountHiddenProductsAsync(cancellationToken);
+        var pendingDisputes = await dashboardRepository.CountPendingDisputesAsync(cancellationToken);
+
+        return new DashboardDto(
+            totalUsers,
+            totalProducts,
+            totalOrders,
+            revenue,
+            activeUsers,
+            bannedUsers,
+            hiddenProducts,
+            pendingDisputes);
+    }
+}

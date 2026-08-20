@@ -1,0 +1,19 @@
+@model DisputeViewModel
+@{ ViewData["Title"] = $"Khiếu nại #{Model.Id}"; }
+<div class="d-flex justify-content-between align-items-center mb-3"><h1 class="page-title mb-0">Khiếu nại #@Model.Id</h1><a class="btn btn-outline-secondary" asp-action="Index">Quay lại</a></div>
+<div class="panel mb-3"><div class="row g-3"><div class="col-md-3"><span class="text-muted">Order</span><div>#@Model.OrderId</div></div><div class="col-md-3"><span class="text-muted">Người tạo</span><div>@Model.RaisedByName</div></div><div class="col-md-3"><span class="text-muted">Status</span><div><span class="badge-status">@Model.Status</span></div></div><div class="col-md-3"><span class="text-muted">Assigned Admin</span><div>@(Model.AssignedAdminName ?? "Chưa assign")</div></div></div><hr /><h2 class="h6">Mô tả</h2><p>@Model.Description</p>@if (!string.IsNullOrWhiteSpace(Model.Resolution)){<h2 class="h6">Kết luận</h2><p>@Model.Resolution</p>}</div>
+<div class="panel">
+    @if (Model.Status == "Open")
+    {
+        <div class="actions mb-3"><form asp-action="Assign" method="post"><input type="hidden" name="id" value="@Model.Id" /><button class="btn btn-primary">Assign cho tôi</button></form></div>
+        <form asp-action="Reject" method="post"><input type="hidden" name="id" value="@Model.Id" /><label class="form-label" for="reject-resolution">Lý do từ chối</label><textarea class="form-control mb-2" id="reject-resolution" name="resolution" required maxlength="2000"></textarea><button class="btn btn-danger">Từ chối</button></form>
+    }
+    else if (Model.Status == "Assigned")
+    {
+        <form asp-action="Resolve" method="post"><input type="hidden" name="id" value="@Model.Id" /><label class="form-label" for="resolve-resolution">Kết luận phân xử</label><textarea class="form-control mb-2" id="resolve-resolution" name="resolution" required maxlength="2000"></textarea><button class="btn btn-success">Resolve</button></form>
+    }
+    else
+    {
+        <p class="text-muted mb-0">Khiếu nại đã kết thúc, không còn thao tác chuyển trạng thái.</p>
+    }
+</div>

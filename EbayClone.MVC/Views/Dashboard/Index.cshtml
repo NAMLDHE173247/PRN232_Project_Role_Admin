@@ -1,0 +1,13 @@
+@model DashboardViewModel
+@{ ViewData["Title"] = "Dashboard"; }
+<h1 class="page-title">Dashboard</h1>
+<div class="row g-3">
+    <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-label">Tổng người dùng</div><div class="stat-value">@Model.TotalUsers</div></div></div>
+    <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-label">Tổng sản phẩm</div><div class="stat-value">@Model.TotalProducts</div></div></div>
+    <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-label">Tổng đơn hàng</div><div class="stat-value">@Model.TotalOrders</div></div></div>
+    <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-label">Doanh thu Paid</div><div class="stat-value">@Model.Revenue.ToString("N0")</div></div></div>
+    <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-label">User Active</div><div class="stat-value">@Model.ActiveUsers</div></div></div>
+    <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-label">User Banned</div><div class="stat-value">@Model.BannedUsers</div></div></div>
+    <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-label">Product Hidden</div><div class="stat-value">@Model.HiddenProducts</div></div></div>
+    <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-label">Dispute Open</div><div class="stat-value">@Model.PendingDisputes</div></div></div>
+</div>

@@ -1,0 +1,62 @@
+@{
+    var isLoggedIn = !string.IsNullOrWhiteSpace(Context.Session.GetString("AdminToken"));
+    var adminEmail = Context.Session.GetString("AdminEmail");
+}
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Bỏ qua điều hướng</a>
+    @if (isLoggedIn)
+    {
+        <div class="admin-shell">
+            <aside class="sidebar" aria-label="Điều hướng Admin">
+                <a class="brand" asp-controller="Dashboard" asp-action="Index">Ebay Admin</a>
+                <nav class="nav flex-column gap-1">
+                    <a class="nav-link" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                    <a class="nav-link" asp-controller="Users" asp-action="Index">Người dùng</a>
+                    <a class="nav-link" asp-controller="Products" asp-action="Index">Sản phẩm</a>
+                    <a class="nav-link" asp-controller="Orders" asp-action="Index">Đơn hàng</a>
+                    <a class="nav-link" asp-controller="Disputes" asp-action="Index">Khiếu nại</a>
+                    <a class="nav-link" asp-controller="AuditLogs" asp-action="Index">Audit Logs</a>
+                </nav>
+            </aside>
+            <div class="content-area">
+                <header class="topbar">
+                    <span class="text-muted small">@adminEmail</span>
+                    <div class="d-flex gap-2">
+                        <button id="theme-toggle" class="btn btn-outline-secondary btn-sm" type="button" aria-label="Đổi giao diện sáng tối">Sáng/Tối</button>
+                        <form asp-controller="Account" asp-action="Logout" method="post">
+                            <button class="btn btn-outline-danger btn-sm" type="submit">Đăng xuất</button>
+                        </form>
+                    </div>
+                </header>
+                <main id="main-content" class="page-content" tabindex="-1">
+                    @if (TempData["Success"] is string success)
+                    {
+                        <div class="alert alert-success" role="status">@success</div>
+                    }
+                    @if (TempData["Error"] is string error)
+                    {
+                        <div class="alert alert-danger" role="alert">@error</div>
+                    }
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+    }
+    else
+    {
+        <main id="main-content" class="login-page" tabindex="-1">@RenderBody()</main>
+    }
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

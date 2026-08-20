@@ -1,0 +1,17 @@
+@model PagedViewModel<AdminProductViewModel>
+@{ ViewData["Title"] = "Sản phẩm"; }
+<h1 class="page-title">Kiểm duyệt sản phẩm</h1>
+<form method="get" class="panel mb-3 row g-2 align-items-end">
+    <div class="col-sm-5 col-lg-3"><label class="form-label" for="status">Trạng thái</label><select class="form-select" id="status" name="status"><option value="">Tất cả</option><option value="Active" selected="@(ViewBag.Status == "Active")">Active</option><option value="Hidden" selected="@(ViewBag.Status == "Hidden")">Hidden</option></select></div>
+    <div class="col-auto"><button class="btn btn-primary" type="submit">Lọc</button></div>
+</form>
+<div class="panel table-responsive"><table class="table align-middle"><thead><tr><th>ID</th><th>Sản phẩm</th><th>Giá</th><th>Seller</th><th>Status</th><th>Thao tác</th></tr></thead><tbody>
+@foreach (var product in Model.Items)
+{
+    <tr><td>@product.Id</td><td>@product.Name</td><td>@product.Price.ToString("N0")</td><td>@product.SellerId</td><td><span class="badge-status">@product.Status</span></td><td>
+        @if (product.Status == "Active") { <form asp-action="Hide" method="post"><input type="hidden" name="id" value="@product.Id" /><button class="btn btn-warning btn-sm">Ẩn</button></form> }
+        else { <form asp-action="Unhide" method="post"><input type="hidden" name="id" value="@product.Id" /><button class="btn btn-outline-success btn-sm">Hiện lại</button></form> }
+    </td></tr>
+}
+</tbody></table></div>
+<div class="mt-3 d-flex justify-content-between"><span class="text-muted">Trang @Model.Page / @Model.TotalPages · @Model.Total bản ghi</span><div class="btn-group"><a class="btn btn-outline-secondary @(Model.Page <= 1 ? "disabled" : "")" asp-route-page="@(Model.Page - 1)" asp-route-status="@ViewBag.Status">Trước</a><a class="btn btn-outline-secondary @(Model.Page >= Model.TotalPages ? "disabled" : "")" asp-route-page="@(Model.Page + 1)" asp-route-status="@ViewBag.Status">Sau</a></div></div>
