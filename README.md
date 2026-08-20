@@ -37,6 +37,8 @@ The MVC project never accesses the database directly. Business rules and authori
 - User approval, block and unblock
 - Dashboard statistics
 - Product hide and unhide moderation
+- Review hide and unhide moderation
+- Feedback monitoring with filtering and pagination
 - Order list and detail monitoring
 - Dispute assign, resolve and reject workflow
 - Audit logging
@@ -70,6 +72,33 @@ docker compose up --build
 Open `http://localhost`. Nginx routes `/` to MVC and `/api/` to the API.
 
 Docker uses the `sqlserver` service name in the API connection string; LocalDB is only used for local development.
+
+## Authorization design
+
+The current system uses Role-Based Authorization with one administrative role:
+
+| Module | Admin permissions |
+| --- | --- |
+| Dashboard | View statistics |
+| Users | View, approve, block, unblock |
+| Products | View, hide, unhide |
+| Orders | View list and details |
+| Disputes | View, assign, resolve, reject |
+| Reviews | View, hide, unhide |
+| Feedbacks | View and monitor |
+| Audit Logs | View |
+
+Every Admin API controller requires a valid JWT with the `Admin` role. Permission-based authorization can be added later if the system introduces multiple administrator levels; it is intentionally outside the current MVP scope.
+
+## Health check
+
+The API exposes:
+
+```text
+GET /health
+```
+
+It is used as a deployment and service availability check.
 
 ## Admin account
 
