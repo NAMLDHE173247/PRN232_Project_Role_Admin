@@ -20,6 +20,7 @@ services:
       - sqlserver
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - EnableDemoSeed=true
       - ConnectionStrings__MyCnn=Server=sqlserver;Database=CloneEbayDB;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True
       - Jwt__Key=${JWT_KEY}
       - AdminAccount__Email=admin@gmail.com

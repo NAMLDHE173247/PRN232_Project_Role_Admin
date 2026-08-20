@@ -73,6 +73,8 @@ Open `http://localhost`. Nginx routes `/` to MVC and `/api/` to the API.
 
 Docker uses the `sqlserver` service name in the API connection string; LocalDB is only used for local development.
 
+Demo data is controlled by `EnableDemoSeed`. It is enabled in the Development example and Docker Compose, but disabled by default in the common configuration. The seed is idempotent and only adds records with the `demo.*` markers; it never clears existing data.
+
 ## Authorization design
 
 The current system uses Role-Based Authorization with one administrative role:

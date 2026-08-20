@@ -728,3 +728,33 @@ docs/postman/EbayClone_Admin_API.postman_environment.json
 ```
 
 Collection bao phủ Login, Dashboard, Users, Products, Orders, Disputes, Reviews, Feedbacks và Audit Logs. Request Login tự lưu JWT vào `jwtToken` để các request Admin dùng Bearer token kế tiếp.
+
+### Trạng thái Phase 7 — Demo Seed Data
+
+Đã bổ sung cờ cấu hình:
+
+```text
+EnableDemoSeed=false  (common configuration)
+EnableDemoSeed=true   (Development example và Docker demo)
+```
+
+Seed hiện có tính idempotent và bổ sung các dữ liệu demo còn thiếu:
+
+```text
+Users:    Pending, Active, Banned
+Products: Active, Hidden
+Reviews:  Visible, Hidden
+Feedback: seller aggregate
+Orders:   Paid, Pending
+Disputes: Open, Assigned
+```
+
+Không xóa dữ liệu hiện có. Khi khởi động lại, số lượng demo không bị nhân bản.
+
+Kiểm tra local database sau khi chạy API:
+
+```text
+Users: 5
+Reviews: 2
+Feedbacks: 1
+```

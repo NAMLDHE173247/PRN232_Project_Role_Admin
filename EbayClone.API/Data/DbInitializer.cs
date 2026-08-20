@@ -30,7 +30,13 @@ public static class DbInitializer
             await dbContext.SaveChangesAsync();
         }
 
-        if (await dbContext.Users.AnyAsync(x => x.Email == "demo.buyer@example.com")) return;
+        if (!configuration.GetValue<bool>("EnableDemoSeed")) return;
+
+        if (await dbContext.Users.AnyAsync(x => x.Email == "demo.buyer@example.com"))
+        {
+            await EnsureSupplementaryDemoDataAsync(dbContext, admin);
+            return;
+        }
 
         var seller = new User
         {
@@ -63,7 +69,19 @@ public static class DbInitializer
             Status = UserStatus.Pending,
             ApprovalStatus = "PendingApproval"
         };
-        dbContext.Users.AddRange(seller, buyer, pending);
+        var banned = new User
+        {
+            Email = "demo.banned@example.com",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Demo@123"),
+            FullName = "Demo Banned User",
+            Role = "User",
+            Status = UserStatus.Banned,
+            ApprovalStatus = "Approved",
+            BannedReason = "Demo moderation data",
+            BannedBy = admin.Id,
+            BannedAt = DateTime.UtcNow.AddDays(-2)
+        };
+        dbContext.Users.AddRange(seller, buyer, pending, banned);
         await dbContext.SaveChangesAsync();
 
         var headphones = new Product
@@ -89,6 +107,8 @@ public static class DbInitializer
         };
         dbContext.Products.AddRange(headphones, keyboard, hiddenProduct);
         await dbContext.SaveChangesAsync();
+
+        await AddSupplementaryDemoDataAsync(dbContext, admin, seller, buyer, headphones, keyboard, hiddenProduct);
 
         var completedOrder = new OrderTable
         {
@@ -155,6 +175,80 @@ public static class DbInitializer
                 Metadata = "{\"seed\":true,\"assignedTo\":1}",
                 CreatedAtUtc = DateTime.UtcNow.AddDays(-2)
             });
+        await dbContext.SaveChangesAsync();
+    }
+
+    private static async Task EnsureSupplementaryDemoDataAsync(AppDbContext dbContext, User admin)
+    {
+        var seller = await dbContext.Users.FirstOrDefaultAsync(x => x.Email == "demo.seller@example.com");
+        var buyer = await dbContext.Users.FirstOrDefaultAsync(x => x.Email == "demo.buyer@example.com");
+        var headphones = await dbContext.Products.FirstOrDefaultAsync(x => x.Name == "Demo Wireless Headphones");
+        var keyboard = await dbContext.Products.FirstOrDefaultAsync(x => x.Name == "Demo Mechanical Keyboard");
+        var hiddenProduct = await dbContext.Products.FirstOrDefaultAsync(x => x.Name == "Demo Product - Hidden For Review");
+        if (seller is null || buyer is null || headphones is null || keyboard is null || hiddenProduct is null) return;
+
+        if (!await dbContext.Users.AnyAsync(x => x.Email == "demo.banned@example.com"))
+        {
+            dbContext.Users.Add(new User
+            {
+                Email = "demo.banned@example.com",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Demo@123"),
+                FullName = "Demo Banned User",
+                Role = "User",
+                Status = UserStatus.Banned,
+                ApprovalStatus = "Approved",
+                BannedReason = "Demo moderation data",
+                BannedBy = admin.Id,
+                BannedAt = DateTime.UtcNow.AddDays(-2)
+            });
+        }
+
+        await AddSupplementaryDemoDataAsync(dbContext, admin, seller, buyer, headphones, keyboard, hiddenProduct);
+    }
+
+    private static async Task AddSupplementaryDemoDataAsync(
+        AppDbContext dbContext,
+        User admin,
+        User seller,
+        User buyer,
+        Product headphones,
+        Product keyboard,
+        Product hiddenProduct)
+    {
+        if (!await dbContext.Reviews.AnyAsync(x => x.Comment != null && x.Comment.StartsWith("Demo review:")))
+        {
+            dbContext.Reviews.AddRange(
+                new Review
+                {
+                    ProductId = headphones.Id,
+                    ReviewerId = buyer.Id,
+                    Rating = 5,
+                    Comment = "Demo review: Excellent product and fast delivery.",
+                    CreatedAt = DateTime.UtcNow.AddDays(-6),
+                    Status = ReviewStatus.Visible
+                },
+                new Review
+                {
+                    ProductId = hiddenProduct.Id,
+                    ReviewerId = buyer.Id,
+                    Rating = 1,
+                    Comment = "Demo review: Hidden for moderation demonstration.",
+                    CreatedAt = DateTime.UtcNow.AddDays(-4),
+                    Status = ReviewStatus.Hidden
+                });
+        }
+
+        if (!await dbContext.Feedbacks.AnyAsync(x => x.SellerId == seller.Id))
+        {
+            dbContext.Feedbacks.Add(new Feedback
+            {
+                SellerId = seller.Id,
+                AverageRating = 4.75m,
+                TotalReviews = 24,
+                PositiveRate = 96.00m
+            });
+        }
+
         await dbContext.SaveChangesAsync();
     }
 }
