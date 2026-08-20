@@ -657,3 +657,31 @@ Kiểm tra:
 - API `/health`: `Healthy`.
 - Login `admin@gmail.com` trả role `Admin` và JWT hợp lệ.
 - `docker compose config`: pass. `docker compose up --build` chưa chạy được vì Docker Desktop daemon trên máy hiện không hoạt động.
+
+### Trạng thái Phase 2 — Review Management
+
+Đã triển khai API Admin Review:
+
+```text
+GET /api/admin/reviews
+GET /api/admin/reviews/{id}
+PUT /api/admin/reviews/{id}/hide
+PUT /api/admin/reviews/{id}/unhide
+```
+
+Review dùng trạng thái:
+
+```text
+Visible ↔ Hidden
+```
+
+Đã bổ sung `ReviewStatus`, mapping `Review` trong `AppDbContext`, Repository, Service, DTO và migration `20260820000500_AddReviewModeration`.
+
+Audit action:
+
+```text
+HIDE_REVIEW
+UNHIDE_REVIEW
+```
+
+MVC integration chưa thực hiện, chờ sau khi các Admin API bổ sung hoàn tất.

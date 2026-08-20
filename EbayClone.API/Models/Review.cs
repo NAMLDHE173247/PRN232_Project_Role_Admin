@@ -17,6 +17,8 @@ public partial class Review
 
     public DateTime? CreatedAt { get; set; }
 
+    public ReviewStatus Status { get; set; } = ReviewStatus.Visible;
+
     public virtual Product? Product { get; set; }
 
     public virtual User? Reviewer { get; set; }

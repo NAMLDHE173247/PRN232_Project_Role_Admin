@@ -12,6 +12,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Payment> Payments => Set<Payment>();
     public DbSet<ShippingInfo> ShippingInfos => Set<ShippingInfo>();
     public DbSet<Dispute> Disputes => Set<Dispute>();
+    public DbSet<Review> Reviews => Set<Review>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -108,6 +109,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.Property(x => x.ResolvedAt).HasColumnName("resolvedAt");
             entity.Ignore(x => x.Order);
             entity.Ignore(x => x.RaisedByNavigation);
+        });
+        modelBuilder.Entity<Review>(entity =>
+        {
+            entity.ToTable("Review");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.ProductId).HasColumnName("productId");
+            entity.Property(x => x.ReviewerId).HasColumnName("reviewerId");
+            entity.Property(x => x.Rating).HasColumnName("rating");
+            entity.Property(x => x.Comment).HasColumnName("comment");
+            entity.Property(x => x.CreatedAt).HasColumnName("createdAt");
+            entity.Property(x => x.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(20);
+            entity.Ignore(x => x.Product);
+            entity.Ignore(x => x.Reviewer);
         });
         modelBuilder.Entity<AuditLog>(entity =>
         {
