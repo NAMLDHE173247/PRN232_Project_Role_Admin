@@ -640,3 +640,20 @@ AuditLogs:    2 (demo seed actions)
 ```
 
 Tài khoản demo User dùng mật khẩu `Demo@123`; tài khoản Admin vẫn là `admin@gmail.com` / `Admin@123`. Dữ liệu demo phục vụ kiểm thử MVC và Dashboard, không thay thế dữ liệu nghiệp vụ thật.
+
+### Trạng thái Phase Final — Docker + Security Hardening + Documentation
+
+Đã hoàn thành:
+
+- Tách connection string LocalDB (Development) và SQL Server container (Docker).
+- Docker nhận `SA_PASSWORD`, `JWT_KEY` và `ADMIN_PASSWORD` qua environment variables.
+- Xóa secret khỏi cấu hình production được commit; cấu hình Development chứa secret được ignore, có file `.example` để tạo lại.
+- DbInitializer đọc tài khoản Admin từ cấu hình, không hard-code mật khẩu trong code.
+- Bổ sung `.env.example`, README hướng dẫn chạy local/Docker và CI workflow đã có restore/build/test/docker build.
+
+Kiểm tra:
+
+- `dotnet build EbayClone.sln --no-restore`: pass, 0 warning, 0 error.
+- API `/health`: `Healthy`.
+- Login `admin@gmail.com` trả role `Admin` và JWT hợp lệ.
+- `docker compose config`: pass. `docker compose up --build` chưa chạy được vì Docker Desktop daemon trên máy hiện không hoạt động.

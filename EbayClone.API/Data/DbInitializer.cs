@@ -5,16 +5,21 @@ namespace EbayClone.API.Data;
 
 public static class DbInitializer
 {
-    public static async Task InitializeAsync(AppDbContext dbContext)
+    public static async Task InitializeAsync(AppDbContext dbContext, IConfiguration configuration)
     {
         await dbContext.Database.MigrateAsync();
-        var admin = await dbContext.Users.FirstOrDefaultAsync(x => x.Email == "admin@gmail.com");
+        var adminEmail = configuration["AdminAccount:Email"];
+        var adminPassword = configuration["AdminAccount:Password"];
+        if (string.IsNullOrWhiteSpace(adminEmail) || string.IsNullOrWhiteSpace(adminPassword))
+            throw new InvalidOperationException("AdminAccount:Email and AdminAccount:Password must be configured.");
+
+        var admin = await dbContext.Users.FirstOrDefaultAsync(x => x.Email == adminEmail);
         if (admin is null)
         {
             admin = new User
             {
-                Email = "admin@gmail.com",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
+                Email = adminEmail,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminPassword),
                 FullName = "System Admin",
                 Role = "Admin",
                 Status = UserStatus.Active,

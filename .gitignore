@@ -9,3 +9,4 @@ coverage/
 .env
 .env.*
 !.env.example
+EbayClone.API/appsettings.Development.json
