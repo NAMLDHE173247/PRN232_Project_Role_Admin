@@ -685,3 +685,24 @@ UNHIDE_REVIEW
 ```
 
 MVC integration chưa thực hiện, chờ sau khi các Admin API bổ sung hoàn tất.
+
+### Trạng thái Phase 3 — Feedback Monitoring
+
+Đã triển khai API read-only:
+
+```text
+GET /api/admin/feedbacks
+GET /api/admin/feedbacks/{id}
+```
+
+Hỗ trợ filter và pagination:
+
+```text
+sellerId
+minRating
+maxRating
+page
+pageSize
+```
+
+`Feedback` được mapping từ bảng hiện có vào `AppDbContext`. Không tạo migration, không thêm workflow resolve/close và không ghi audit cho các thao tác GET.

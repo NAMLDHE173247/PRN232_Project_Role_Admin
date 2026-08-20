@@ -13,6 +13,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<ShippingInfo> ShippingInfos => Set<ShippingInfo>();
     public DbSet<Dispute> Disputes => Set<Dispute>();
     public DbSet<Review> Reviews => Set<Review>();
+    public DbSet<Feedback> Feedbacks => Set<Feedback>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -122,6 +123,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.Property(x => x.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(20);
             entity.Ignore(x => x.Product);
             entity.Ignore(x => x.Reviewer);
+        });
+        modelBuilder.Entity<Feedback>(entity =>
+        {
+            entity.ToTable("Feedback");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.SellerId).HasColumnName("sellerId");
+            entity.Property(x => x.AverageRating).HasColumnName("averageRating").HasPrecision(3, 2);
+            entity.Property(x => x.TotalReviews).HasColumnName("totalReviews");
+            entity.Property(x => x.PositiveRate).HasColumnName("positiveRate").HasPrecision(5, 2);
+            entity.Ignore(x => x.Seller);
         });
         modelBuilder.Entity<AuditLog>(entity =>
         {
