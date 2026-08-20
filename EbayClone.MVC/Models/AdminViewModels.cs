@@ -41,6 +41,13 @@ public record AdminUserViewModel(
 
 public record AdminProductViewModel(int Id, string Name, decimal Price, int SellerId, string Status);
 
+public record AdminFeedbackViewModel(
+    int Id,
+    int? SellerId,
+    decimal? AverageRating,
+    int? TotalReviews,
+    decimal? PositiveRate);
+
 public record OrderViewModel(
     int OrderId,
     int? BuyerId,

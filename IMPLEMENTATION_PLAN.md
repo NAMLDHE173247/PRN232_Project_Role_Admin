@@ -757,4 +757,15 @@ Kiểm tra local database sau khi chạy API:
 Users: 5
 Reviews: 2
 Feedbacks: 1
+
+### Trạng thái Phase 8 — MVC Feedback Integration
+
+Đã bổ sung trang monitoring feedback:
+
+```text
+/Feedbacks
+/Feedbacks/Details/{id}
+```
+
+MVC hỗ trợ filter `sellerId`, `minRating`, `maxRating` và pagination thông qua `AdminApiClient`. MVC không truy cập `DbContext` và không xử lý business rule. Route chưa đăng nhập đã được kiểm tra chuyển về `/Account/Login`.
 ```

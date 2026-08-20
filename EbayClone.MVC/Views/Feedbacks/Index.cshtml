@@ -1,0 +1,53 @@
+@model PagedViewModel<AdminFeedbackViewModel>
+@{ ViewData["Title"] = "Feedback Monitoring"; }
+
+<h1 class="page-title">Feedback Monitoring</h1>
+<form method="get" class="panel mb-3 row g-2 align-items-end">
+    <div class="col-sm-4 col-lg-3">
+        <label class="form-label" for="sellerId">Seller ID</label>
+        <input class="form-control" id="sellerId" name="sellerId" type="number" min="1" value="@ViewBag.SellerId" />
+    </div>
+    <div class="col-sm-4 col-lg-2">
+        <label class="form-label" for="minRating">Rating từ</label>
+        <input class="form-control" id="minRating" name="minRating" type="number" min="0" max="5" step="0.01" value="@ViewBag.MinRating" />
+    </div>
+    <div class="col-sm-4 col-lg-2">
+        <label class="form-label" for="maxRating">Rating đến</label>
+        <input class="form-control" id="maxRating" name="maxRating" type="number" min="0" max="5" step="0.01" value="@ViewBag.MaxRating" />
+    </div>
+    <div class="col-auto"><button class="btn btn-primary" type="submit">Lọc</button></div>
+</form>
+
+<div class="panel table-responsive">
+    <table class="table align-middle">
+        <thead><tr><th>ID</th><th>Seller</th><th>Rating trung bình</th><th>Tổng review</th><th>Tỷ lệ tích cực</th><th></th></tr></thead>
+        <tbody>
+        @if (Model.Items.Count == 0)
+        {
+            <tr><td colspan="6" class="text-muted">Chưa có dữ liệu feedback.</td></tr>
+        }
+        else
+        {
+            foreach (var feedback in Model.Items)
+            {
+                <tr>
+                    <td>#@feedback.Id</td>
+                    <td>@(feedback.SellerId?.ToString() ?? "-")</td>
+                    <td>@(feedback.AverageRating?.ToString("0.00") ?? "-")</td>
+                    <td>@(feedback.TotalReviews?.ToString() ?? "0")</td>
+                    <td>@(feedback.PositiveRate?.ToString("0.00") ?? "-")%</td>
+                    <td><a class="btn btn-outline-primary btn-sm" asp-action="Details" asp-route-id="@feedback.Id">Chi tiết</a></td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-3 d-flex justify-content-between">
+    <span class="text-muted">Trang @Model.Page / @Model.TotalPages · @Model.Total bản ghi</span>
+    <div class="btn-group">
+        <a class="btn btn-outline-secondary @(Model.Page <= 1 ? "disabled" : "")" asp-route-page="@(Model.Page - 1)" asp-route-sellerId="@ViewBag.SellerId" asp-route-minRating="@ViewBag.MinRating" asp-route-maxRating="@ViewBag.MaxRating">Trước</a>
+        <a class="btn btn-outline-secondary @(Model.Page >= Model.TotalPages ? "disabled" : "")" asp-route-page="@(Model.Page + 1)" asp-route-sellerId="@ViewBag.SellerId" asp-route-minRating="@ViewBag.MinRating" asp-route-maxRating="@ViewBag.MaxRating">Sau</a>
+    </div>
+</div>
