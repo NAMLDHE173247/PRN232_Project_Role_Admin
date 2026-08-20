@@ -114,3 +114,12 @@ For Docker, set `ADMIN_PASSWORD` in `.env`; do not commit real credentials.
 ## CI
 
 GitHub Actions runs restore, build, test and Docker image builds on pushes and pull requests to `main` or `master`.
+
+## API testing with Postman
+
+Import these files from `docs/postman`:
+
+- `EbayClone_Admin_API.postman_collection.json`
+- `EbayClone_Admin_API.postman_environment.json`
+
+Run `Authentication/Login Admin` first. Its test script stores the returned JWT in `jwtToken`; the other requests inherit the collection-level Bearer authorization automatically.

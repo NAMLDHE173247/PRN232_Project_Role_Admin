@@ -1,0 +1,147 @@
+{
+  "info": {
+    "name": "EbayClone Admin API",
+    "description": "Postman collection for Admin authentication, management, moderation and audit flows.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:5088" },
+    { "key": "adminEmail", "value": "admin@gmail.com" },
+    { "key": "adminPassword", "value": "Admin@123" },
+    { "key": "jwtToken", "value": "" },
+    { "key": "userId", "value": "1" },
+    { "key": "productId", "value": "1" },
+    { "key": "orderId", "value": "1" },
+    { "key": "disputeId", "value": "1" },
+    { "key": "reviewId", "value": "1" },
+    { "key": "feedbackId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{adminEmail}}\",\n  \"password\": \"{{adminPassword}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": [ "{{baseUrl}}" ], "path": [ "api", "auth", "login" ] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login succeeds', function () { pm.response.to.have.status(200); });",
+                  "const body = pm.response.json();",
+                  "pm.collectionVariables.set('jwtToken', body.token);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        { "name": "Get Dashboard", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/dashboard" } }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        { "name": "List Users", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/users?page=1&pageSize=10" } },
+        { "name": "Approve User", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/users/{{userId}}/approve" } },
+        {
+          "name": "Block User",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"reason\": \"Policy violation\"\n}" },
+            "url": "{{baseUrl}}/api/admin/users/{{userId}}/block"
+          }
+        },
+        { "name": "Unblock User", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/users/{{userId}}/unblock" } }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        { "name": "List Products", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/products?page=1&pageSize=10" } },
+        { "name": "Hide Product", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/products/{{productId}}/hide" } },
+        { "name": "Unhide Product", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/products/{{productId}}/unhide" } }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        { "name": "List Orders", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/orders?page=1&pageSize=10" } },
+        { "name": "Order Detail", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/orders/{{orderId}}" } }
+      ]
+    },
+    {
+      "name": "Disputes",
+      "item": [
+        { "name": "List Disputes", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/disputes?page=1&pageSize=10" } },
+        {
+          "name": "Assign Dispute",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"adminId\": 1\n}" },
+            "url": "{{baseUrl}}/api/admin/disputes/{{disputeId}}/assign"
+          }
+        },
+        {
+          "name": "Resolve Dispute",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"resolution\": \"Resolved after reviewing order evidence\"\n}" },
+            "url": "{{baseUrl}}/api/admin/disputes/{{disputeId}}/resolve"
+          }
+        },
+        {
+          "name": "Reject Dispute",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"resolution\": \"Evidence does not support the claim\"\n}" },
+            "url": "{{baseUrl}}/api/admin/disputes/{{disputeId}}/reject"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        { "name": "List Reviews", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/reviews?page=1&pageSize=10" } },
+        { "name": "Hide Review", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/reviews/{{reviewId}}/hide" } },
+        { "name": "Unhide Review", "request": { "method": "PUT", "url": "{{baseUrl}}/api/admin/reviews/{{reviewId}}/unhide" } }
+      ]
+    },
+    {
+      "name": "Feedbacks",
+      "item": [
+        { "name": "List Feedbacks", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/feedbacks?page=1&pageSize=10" } },
+        { "name": "Feedback Detail", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/feedbacks/{{feedbackId}}" } }
+      ]
+    },
+    {
+      "name": "Audit",
+      "item": [
+        { "name": "List Audit Logs", "request": { "method": "GET", "url": "{{baseUrl}}/api/admin/audit-logs?page=1&pageSize=20" } }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [ { "key": "token", "value": "{{jwtToken}}", "type": "string" } ]
+  }
+}

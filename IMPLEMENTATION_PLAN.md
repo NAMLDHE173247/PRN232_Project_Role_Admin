@@ -717,3 +717,14 @@ pageSize
 - Swagger build hiển thị response `200` của endpoint và mô tả security ở document level.
 
 Đã kiểm tra trực tiếp `/swagger/v1/swagger.json`: có Bearer scheme, `/api/admin/reviews` và `/api/admin/feedbacks`.
+
+### Trạng thái Phase 6 — Postman Collection
+
+Đã tạo:
+
+```text
+docs/postman/EbayClone_Admin_API.postman_collection.json
+docs/postman/EbayClone_Admin_API.postman_environment.json
+```
+
+Collection bao phủ Login, Dashboard, Users, Products, Orders, Disputes, Reviews, Feedbacks và Audit Logs. Request Login tự lưu JWT vào `jwtToken` để các request Admin dùng Bearer token kế tiếp.
