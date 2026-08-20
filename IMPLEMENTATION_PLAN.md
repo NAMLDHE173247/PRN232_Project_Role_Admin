@@ -706,3 +706,14 @@ pageSize
 ```
 
 `Feedback` được mapping từ bảng hiện có vào `AppDbContext`. Không tạo migration, không thêm workflow resolve/close và không ghi audit cho các thao tác GET.
+
+### Trạng thái Phase 5 — Swagger Documentation
+
+Đã hoàn thiện Swagger cho API:
+
+- API title/version/description.
+- JWT Bearer security scheme và nút `Authorize`.
+- XML documentation cho các controller mới.
+- Swagger build hiển thị response `200` của endpoint và mô tả security ở document level.
+
+Đã kiểm tra trực tiếp `/swagger/v1/swagger.json`: có Bearer scheme, `/api/admin/reviews` và `/api/admin/feedbacks`.

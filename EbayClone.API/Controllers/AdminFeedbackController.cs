@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EbayClone.API.Controllers;
 
+/// <summary>Read-only monitoring of seller feedback aggregates.</summary>
 [ApiController]
 [Authorize(Roles = "Admin")]
 [Route("api/admin/feedbacks")]

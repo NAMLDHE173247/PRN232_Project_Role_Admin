@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EbayClone.API.Controllers;
 
+/// <summary>Moderation endpoints for product reviews.</summary>
 [ApiController]
 [Authorize(Roles = "Admin")]
 [Route("api/admin/reviews")]
